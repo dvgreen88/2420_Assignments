@@ -9,6 +9,8 @@ public class Percolation {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		
+		//if (i < 0 || i >= N) throw new IndexOutOfBoundsException("row index " + i + " must be between 0 and " + (N-1));
 	}
 		
 	public Percolation(int n) {
