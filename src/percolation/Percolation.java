@@ -1,6 +1,7 @@
 /**
  * @author in order of appearance: David Weber, Vance Green
  * @Date created: 1/24/2015 - David Weber
+ * 
  * @Date last modified: 1/25/2015 - David Weber
  */
 package percolation;

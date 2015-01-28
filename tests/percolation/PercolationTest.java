@@ -6,10 +6,8 @@ import org.junit.Test;
 
 public class PercolationTest {
 
-	@Test
-	public void testPercolation() {
-		fail("Not yet implemented");
-	}
+	Percolation perc20 = new Percolation(20);
+	
 
 	@Test
 	public void testIsFull() {
