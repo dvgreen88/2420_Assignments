@@ -11,13 +11,12 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
 	private int size;
 	// private int[][] percolationBoard; //open=1; close=0; ??
-	private boolean[][] openCloseBoard; // open=true; close=false; ??
+	private boolean[] openCloseBoard; // open=true; close=false; ??
 	// don't forget arrayOffsets
 	// how to get index of openCloseBoard, where to find number?
 	private WeightedQuickUnionUF wquUF;
-
-	// private int singleTopSpot = 0; virtual top spot
-	// private int singleBottomSpot; virtual bottom spot
+	private int topConnector;
+	private int bottomConnector;
 
 	/**
 	 * create N­by­N grid, with all sites blocked 
@@ -25,13 +24,16 @@ public class Percolation {
 	 * @param N = size
 	 */
 	public Percolation(int n) {
+		if (n < 1) {
+			throw new java.lang.IllegalArgumentException();
+		}
 		size = n;
-		wquUF = new WeightedQuickUnionUF(size * size); // plus two? include
-		// virtual spots
-		// singleBottomSpot = size+1; ?? or is it size*size+1
-		openCloseBoard = new boolean[size][size];
-		// need to create the boardutOfBoundsException("row index " + i +
-		// " must be between 0 and " + (N-1));
+		wquUF = new WeightedQuickUnionUF(n * n + 2); // plus two? include virtual spots
+		openCloseBoard = new boolean[n]; 
+		wquUF = new WeightedQuickUnionUF(n * n + 2);
+		openCloseBoard = new boolean[n * n];
+		topConnector = n * n;
+		bottomConnector = n * n + 1;
 	}
 
 	/**
@@ -43,13 +45,10 @@ public class Percolation {
 	 */
 	public boolean isFull(int row, int col) {
 		if (row < 0 || row > size || col < 0 || col > size) {
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("row = " + row + " col = " + col);
 		} else {
-
+			return wquUF.connected(topConnector, (row) * size + (col));
 		}
-		// throw IndexOutOfBoundsException
-		// if (...) else throw IndexOutOfBoundsException
-		return false;
 	}
 
 	/**
@@ -59,12 +58,15 @@ public class Percolation {
 	 * @param j = column
 	 * @return whether (row i, column j) is open, true if open
 	 */
+	private boolean isOpen(int index) {
+		return openCloseBoard[index];
+	}
+	
 	public boolean isOpen(int row, int col) {
 		if (row < 0 || row > size || col < 0 || col > size) {
-			throw new IndexOutOfBoundsException();
-		} else {
-			return openCloseBoard[row][col];
-		}
+			throw new IndexOutOfBoundsException("row = " + row + " col = " + col);
+		} 			
+		return isOpen((row) * size + (col));
 	}
 
 	/**
@@ -73,7 +75,7 @@ public class Percolation {
 	 * @return whether the current system percolates, true if percolates
 	 */
 	public boolean percolates() {
-		return wquUF.connected(0, size + 1);
+		return wquUF.connected(topConnector, bottomConnector);
 	}
 
 	/**
@@ -84,9 +86,40 @@ public class Percolation {
 	 */
 	public void open(int row, int col) {
 		if (row < 0 || row > size || col < 0 || col > size) {
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("row = " + row + " col = " + col);
 		} else {
-			openCloseBoard[row - 1][col - 1] = true; // due to offset
-		}
+			openCloseBoard[(row - 1) * size + (col - 1)] = true; // due to offset
+		}		
+		
+//		 if (row == 0) {
+//		 //top row must be connected to virtual section (first blue spot too)
+//		 wquUF.union((row) * size + (col), topConnector);
+//		 }
+		
+//		 if (row == size) {
+//		 //bottom row must be connected to virtual section (last blue spot, defines percolation)
+//		 wquUF.union(((row - 1) * size + (col - 1)), bottomConnector);
+//		 }
+		
+//		 if (col > 1 && isOpen(row, col - 1)) {
+//		 //if cell open to left, then union with it
+//		 //col > 1 has to happen or forces index out of bounds
+//		 wquUF.union((row) * size + (col), (row) * size + (col - 1));
+//		 }
+		
+//		 if (col < size && isOpen(row, col + 1)) {
+//		 //if cell open to right, then union with it
+//		 wquUF.union((row) * size + (col), (row) * size + (col + 1));
+//		 }
+		
+//		 if (row > 1 && isOpen(row - 1, col)) {
+//		 //if cell open below, then union with it
+//		 wquUF.union(findIndex(row, col), findIndex(row - 1, col));
+//		 }
+		
+//		 if (row < size && isOpen(row + 1, col)) {
+//		 //if cell open above, then union with it
+//		 wquUF.union(findIndex(row, col), findIndex(row + 1, col));
+//		 }
 	}
 }
