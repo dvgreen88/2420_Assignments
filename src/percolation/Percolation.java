@@ -22,6 +22,10 @@ public class Percolation {
 	private WeightedQuickUnionUF wquUF;
 	private int topConnector;
 	private int bottomConnector;
+	
+	public static void main(String[] args){
+
+	}
 
 	/**
 	 * create N­by­N grid, with all sites blocked 
@@ -47,11 +51,8 @@ public class Percolation {
 	 * @return = whether (row i, column j) is full, true if full
 	 */
 	public boolean isFull(int row, int col) {
-		if (row < 0 || row > size || col < 0 || col > size) {
-			throw new IndexOutOfBoundsException("row = " + row + " col = " + col);
-		} else {
+		if (valid(row,col)==true);
 			return wquUF.connected(topConnector, (row) * size + (col));
-		}
 	}
 
 	/**
@@ -66,10 +67,8 @@ public class Percolation {
 	}
 	
 	public boolean isOpen(int row, int col) {
-		if (row < 0 || row > size || col < 0 || col > size) {
-			throw new IndexOutOfBoundsException("row = " + row + " col = " + col);
-		} 			
-		return isOpen((row) * size + (col));
+		if (valid(row,col)==true); 			
+			return isOpen((row) * size + (col));
 	}
 
 	/**
@@ -88,46 +87,64 @@ public class Percolation {
 	 * @param j = column
 	 */
 	public void open(int row, int col) {
+		if (valid(row,col)==true); 
+			openCloseBoard[(row - 1) * size + (col - 1)] = true; // due to offset		
+	}
+
+	/**
+	 * This is called from the PercolationVisualizer app, haven't looked into 
+	 * what it is supposed to do yet. 
+	 * @return
+	 */
+	public String numberOfOpenSites() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/**
+	 * Determines whether or not a row/column value pair are within bounds
+	 * or not. If outside of bounds an IndexOutOfBounds exception is thrown, 
+	 * otherwise returns "true".
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	private boolean valid(int row, int col) {
 		if (row < 0 || row > size || col < 0 || col > size) {
 			throw new IndexOutOfBoundsException("row = " + row + " col = " + col);
 		} else {
-			openCloseBoard[(row - 1) * size + (col - 1)] = true; // due to offset
-		}		
-		
+			return true;
+		}
+	}
+}
+
 //		 if (row == 0) {
 //		 //top row must be connected to virtual section (first blue spot too)
 //		 wquUF.union((row) * size + (col), topConnector);
 //		 }
-		
+
 //		 if (row == size) {
 //		 //bottom row must be connected to virtual section (last blue spot, defines percolation)
 //		 wquUF.union(((row - 1) * size + (col - 1)), bottomConnector);
 //		 }
-		
+
 //		 if (col > 1 && isOpen(row, col - 1)) {
 //		 //if cell open to left, then union with it
 //		 //col > 1 has to happen or forces index out of bounds
 //		 wquUF.union((row) * size + (col), (row) * size + (col - 1));
 //		 }
-		
+
 //		 if (col < size && isOpen(row, col + 1)) {
 //		 //if cell open to right, then union with it
 //		 wquUF.union((row) * size + (col), (row) * size + (col + 1));
 //		 }
-		
+
 //		 if (row > 1 && isOpen(row - 1, col)) {
 //		 //if cell open below, then union with it
 //		 wquUF.union(findIndex(row, col), findIndex(row - 1, col));
 //		 }
-		
+
 //		 if (row < size && isOpen(row + 1, col)) {
 //		 //if cell open above, then union with it
 //		 wquUF.union(findIndex(row, col), findIndex(row + 1, col));
 //		 }
-	}
-
-	public String numberOfOpenSites() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-}
