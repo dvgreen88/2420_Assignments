@@ -125,4 +125,9 @@ public class Percolation {
 //		 wquUF.union(findIndex(row, col), findIndex(row + 1, col));
 //		 }
 	}
+
+	public String numberOfOpenSites() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
