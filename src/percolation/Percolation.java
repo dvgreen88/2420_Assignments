@@ -1,14 +1,13 @@
-
 /**
  * @author in order of appearance: David Weber, Vance Green
  * @Date created: 1/24/2015 - David Weber
 <<<<<<< HEAD
- * 
- * @Date last modified: 1/25/2015 - David Weber
-=======
- * @Date last modified: 1/28/2015 - Vance Green
+ * @Date last modified: 1/29/2015 - Vance Green
 >>>>>>> branch 'master' of https://github.com/davidlweber/2420_Assignments.git
  */
+ 
+//May be able to consolidate more lines of code..
+
 package percolation;
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
@@ -17,6 +16,7 @@ public class Percolation {
 	private int size;
 	private boolean[][] openCloseBoard; // open=true; close=false; ??
 	private WeightedQuickUnionUF wquUF;
+	private WeightedQuickUnionUF backwashEraser;
 	private int topConnector;
 	private int bottomConnector;
 
@@ -30,11 +30,12 @@ public class Percolation {
 			throw new java.lang.IllegalArgumentException();
 		}
 		size = n;
-		wquUF = new WeightedQuickUnionUF(n * n + 2); // plus two? include
-														// virtual spots
+		wquUF = new WeightedQuickUnionUF(n * n + 2); // plus two? include virtual spots
+		backwashEraser = new WeightedQuickUnionUF(n * n + 1); //removes backwash/bottom connector
 		openCloseBoard = new boolean[n][n];
 		topConnector = n * n; // 10x10 = 100 (due to board its 100 on UF)
-		bottomConnector = n * n + 1; // 10x10+1 = 101 (due to board its 101 on UF)
+		bottomConnector = n * n + 1; // 10x10+1 = 101 (due to board its 101 on
+										// UF)
 	}
 
 	/**
@@ -46,9 +47,8 @@ public class Percolation {
 	 */
 	public boolean isFull(int row, int col) {
 		if (validate(row, col)) {
-			return wquUF.connected(findIndexFrom2d(row, col), topConnector);
+			return backwashEraser.connected(findIndexFrom2d(row, col), topConnector);
 		}
-		
 		return false;
 	}
 
@@ -61,7 +61,7 @@ public class Percolation {
 	 */
 	public boolean isOpen(int row, int col) {
 		if (validate(row, col)) {
-			return openCloseBoard[row][col];			
+			return openCloseBoard[row][col];
 		} else {
 			return false;
 		}
@@ -83,51 +83,44 @@ public class Percolation {
 	 * @param col = column
 	 */
 	public void open(int row, int col) {
-		if (validate(row, col)) {			
+		if (validate(row, col)) {
 			openCloseBoard[row][col] = true;
-			
 			if (row == 0) {
 				wquUF.union(findIndexFrom2d(row, col), topConnector);
+				backwashEraser.union(findIndexFrom2d(row, col), topConnector);
 			}
 			
-			if (row == size-1) { 
+			if (row == size - 1) {
 				wquUF.union(findIndexFrom2d(row, col), bottomConnector);
 			}
 			
 			if (row > 0 && isOpen(row - 1, col)) {
 				wquUF.union(findIndexFrom2d(row, col), findIndexFrom2d(row - 1, col));
+				backwashEraser.union(findIndexFrom2d(row, col),	findIndexFrom2d(row - 1, col));
 			}
 			
 			if (row < size - 1 && isOpen(row + 1, col)) {
 				wquUF.union(findIndexFrom2d(row, col), findIndexFrom2d(row + 1, col));
+				backwashEraser.union(findIndexFrom2d(row, col), findIndexFrom2d(row + 1, col));
 			}
 			
 			if (col > 0 && isOpen(row, col - 1)) {
 				wquUF.union(findIndexFrom2d(row, col), findIndexFrom2d(row, col - 1));
+				backwashEraser.union(findIndexFrom2d(row, col), findIndexFrom2d(row, col - 1));
 			}
 			
 			if (col < size - 1 && isOpen(row, col + 1)) {
 				wquUF.union(findIndexFrom2d(row, col), findIndexFrom2d(row, col + 1));
+				backwashEraser.union(findIndexFrom2d(row, col), findIndexFrom2d(row, col + 1));
 			}
 		}
-	}
-
-	/**
-	 * This is called from the PercolationVisualizer app, haven't looked into
-	 * what it is supposed to do yet.
-	 * 
-	 * @return
-	 */
-	public String numberOfOpenSites() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
 	 * Determines whether or not a row/column value pair are within bounds or
 	 * not. If outside of bounds an IndexOutOfBounds exception is thrown,
 	 * otherwise returns "true".
-	 * 
+	 *
 	 * @param row
 	 * @param col
 	 * @return
@@ -139,7 +132,7 @@ public class Percolation {
 			return true;
 		}
 	}
-	
+
 	private int findIndexFrom2d(int row, int col) {
 		return (row * size) + col;
 	}
