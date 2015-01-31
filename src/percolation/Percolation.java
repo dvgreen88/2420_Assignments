@@ -136,4 +136,11 @@ public class Percolation {
 	private int findIndexFrom2d(int row, int col) {
 		return (row * size) + col;
 	}
+
+	
+	public String numberOfOpenSites() {
+		// TODO I'm getting an error in the visualizer that says this doesn't exist
+		//so here it is. 
+		return null;
+	}
 }
