@@ -2,12 +2,9 @@
  * @author in order of appearance: David Weber, Vance Green
  * @Date created: 1/24/2015 - David Weber
 <<<<<<< HEAD
- * @Date last modified: 1/29/2015 - Vance Green
+ * @Date last modified: 2/2/2015 - Vance Green
 >>>>>>> branch 'master' of https://github.com/davidlweber/2420_Assignments.git
  */
- 
-//May be able to consolidate more lines of code..
-
 package percolation;
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
@@ -30,8 +27,9 @@ public class Percolation {
 			throw new java.lang.IllegalArgumentException();
 		}
 		size = n;
-		wquUF = new WeightedQuickUnionUF(n * n + 2); // plus two? include virtual spots
-		backwashEraser = new WeightedQuickUnionUF(n * n + 1); //removes backwash/bottom connector
+		wquUF = new WeightedQuickUnionUF(n * n + 2); // plus two? include
+														// virtual spots
+		backwashEraser = new WeightedQuickUnionUF(n * n + 1);
 		openCloseBoard = new boolean[n][n];
 		topConnector = n * n; // 10x10 = 100 (due to board its 100 on UF)
 		bottomConnector = n * n + 1; // 10x10+1 = 101 (due to board its 101 on
@@ -127,7 +125,8 @@ public class Percolation {
 	 */
 	private boolean validate(int row, int col) {
 		if (row < 0 || row > size || col < 0 || col > size) {
-			throw new IndexOutOfBoundsException("row = " + row + " col = " + col);
+			throw new IndexOutOfBoundsException("row = " + row + " col = "
+					+ col);
 		} else {
 			return true;
 		}
@@ -135,12 +134,5 @@ public class Percolation {
 
 	private int findIndexFrom2d(int row, int col) {
 		return (row * size) + col;
-	}
-
-	
-	public String numberOfOpenSites() {
-		// TODO I'm getting an error in the visualizer that says this doesn't exist
-		//so here it is. 
-		return null;
 	}
 }
