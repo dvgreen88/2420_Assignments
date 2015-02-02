@@ -1,7 +1,7 @@
 /**
  * @author in order of appearance: David Weber, Vance Green
  * @Date created: 1/24/2015 - David Weber
- * @Date last modified: 1/28/2015 - Vance Green
+ * @Date last modified: 2/2/2015 - Vance Green
  */
 
 package percolation;
@@ -10,53 +10,56 @@ import edu.princeton.cs.introcs.StdOut;
 import edu.princeton.cs.introcs.StdRandom;
 import edu.princeton.cs.introcs.StdStats;
 
-/**
- * @author Vance
- *
- */
 public class PercolationStats {
-	private static int T = 100; // number of experiments
-	private static int N = 200; // N x N grid
+	private static int t; // number of experiments
+	private static int n; // N x N grid
 	private static double[] doubleArray;
-	private static double howManyOpen = 0;
-	private double numToPercolation;
-	private int randomValue1;
-	private int randomValue2;
+	private static double howManyOpen;
+	private static double numToPercolation;
+	private static int rowRandomValue;
+	private static int colRandomValue;
 
 	/**
 	 * perform T independent experiments on an N x N grid both T & N >= 0
 	 * 
-	 * @param N = size of the grid
+	 * @param N = size of the grid (N row X N col)
 	 * @param T = number of experiments
 	 */
 	public PercolationStats(int N, int T) {
 		// perform T independent experiments on an N x N grid both T & N >= 0
 		// possible loop - cycle through the number of experiments
 		// loop inside loop - run through all (T) cases
+		// run percolation through the loop?
 		// randomizer? for which location to open StdRandom.uniform
+		// randomizer from 1 -> n+1 (array offset)
+		// int won't be less than 1 causing arrayOffset, -1 from indices
 		// what goes in doubleArray?? counter (number of spots opened for
 		// percolation)/N*N
 		if (N <= 0 || T <= 0) {
 			throw new IllegalArgumentException("N <= 0 || T <= 0");
 		}
 
-		doubleArray = new double[T];
-		for (int i = 0; i < T; i++) {
+		t = T;
+		n = N;
+		
+	}
+
+	private static double runPercExperiments(int N) {
 			Percolation p = new Percolation(N); // outside or inside loop?
-			while (!p.percolates()) {
+			howManyOpen = 0;
+			do {
 				// opens two random values
-				randomValue1 = StdRandom.uniform(1, N + 1);
-				randomValue2 = StdRandom.uniform(1, N + 1);
+				rowRandomValue = StdRandom.uniform(0, N);
+				colRandomValue = StdRandom.uniform(0, N);
 				// what if spot is already open?? check ifOpen
 				// move howManyOpen to only increase if spot not already open
-				if (!p.isOpen(randomValue1, randomValue2)) {
+				if (!p.isOpen(rowRandomValue, colRandomValue)) {
 					howManyOpen++;
-					p.open(randomValue1, randomValue2);
+					p.open(rowRandomValue, colRandomValue);
 				}
-			}
-			numToPercolation = howManyOpen / N * N;
-			doubleArray[i] = numToPercolation;
-		}
+			} while (!p.percolates());
+			numToPercolation = howManyOpen / Math.pow(N, 2);
+			return numToPercolation;
 	}
 
 	/**
@@ -85,7 +88,7 @@ public class PercolationStats {
 		double mean = mean();
 		double deviation = stddev();
 
-		return mean - ((1.96 * deviation) / Math.sqrt(T));
+		return mean - ((1.96 * deviation) / Math.sqrt(t));
 	}
 
 	/**
@@ -97,23 +100,25 @@ public class PercolationStats {
 		double mean = mean();
 		double deviation = stddev();
 
-		return mean + ((1.96 * deviation) / Math.sqrt(T));
-	}
-
-	public static double getHowManyOpen() {
-		return howManyOpen;
+		return mean + ((1.96 * deviation) / Math.sqrt(t));
 	}
 
 	public static void main(String[] args) {
-		PercolationStats myPercolationStats = new PercolationStats(N, T);
+		PercolationStats percStats = new PercolationStats(100, 200);
+		
+		doubleArray = new double[t];
+		
+		for (int i = 0; i < t; i++) {
+			doubleArray[i] = runPercExperiments(n);
+		}
+		
 
-		StdOut.printf("Ran with PercolationStats(%d, %d) %n", N, T);
-		StdOut.println("Mean():              " + myPercolationStats.mean());
-		StdOut.println("Standard Deviation:  " + myPercolationStats.stddev());
-		StdOut.println("Low Confidence Int:  "
-				+ myPercolationStats.confidenceLow());
-		StdOut.println("High Confidence Int: "
-				+ myPercolationStats.confidenceHigh());
+		StdOut.printf("Ran with PercolationStats(%d, %d) %n%n", n, t);
+		
+		StdOut.println("Mean():                 " + percStats.mean());
+		StdOut.println("Standard Deviation :    " + percStats.stddev());
+		StdOut.println("Low Confidence Int :    " + percStats.confidenceLow());
+		StdOut.println("High Confidence Int:    " + percStats.confidenceHigh());
 	}
 
 }
